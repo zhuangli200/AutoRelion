@@ -146,6 +146,11 @@ if __name__ == "__main__":
     args = ArgumentParse()
     comm = update_global_parameters(args)
     version = get_relion_version()
+    if version == "3.1":
+        from Template31 import *
+    else:
+        from Template30 import *
+
     if args.mode == "auto":
         create_relion_project(version)
         params = update_parameters(args)
