@@ -1,2 +1,4 @@
 /.vscode
 /trash
+/__pycache__
+/*.pyc
