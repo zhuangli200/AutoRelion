@@ -10,9 +10,9 @@ The program is designed for on-the-fly data processing, it is meaningless to use
   
 For sake of ease of use, the program is designed in sacrifise of fexibility. For instance, user can only use motioncorr2 to do motion corrections, gctf  to do ctf estimation, relion picking(with or without template) for particle picking. Also, some parameters are not adjustable.  
   
-Since the program is designed based on the setting of Purdue cryo-EM facility, adjustment needs to be done to fit your local settings. A major difference among different institutions is how the movies or motion corrected images to you relion folder are imported. For instance, the cryo-EM data can be locally accessed. While others may need  "rsync" or other syncing tools to transfer the newly collected data. In this case, the commands in template files need to be modified. 2D classiification job is submited to job queue via slurm. While others may use different slurm parameters or even "qsub" command. 
+Since the program is designed based on the setting of Purdue cryo-EM facility, adjustment needs to be done to fit your local settings. A major difference among different institutions is how the movies or motion corrected images to you relion folder are imported. For instance, the cryo-EM data can be locally accessed. While others may need  "rsync" or other syncing tools to transfer the newly collected data to local storage. In this case, the commands in template files need to be modified. 2D classiification job is submited to job queue via slurm. While others may use different slurm parameters or even "qsub" command. 
   
-  
+
 **Usage:**  
 The program is designed in the two different modes, auto and collect mode.  
   
@@ -28,7 +28,7 @@ In auto mode, the program will initiate a relion project and create a series of 
 - Optionally, you can ask the program to run 2d classification for you.  
     `python 12345.py auto --new_sample --do_motioncorrection --run2d`  
   
-If you had setup a relion project, fine tuned some parameters with a small dataset, and wanna continue processing the upcoming data, you need the "collect" mode. To use the collect mode, you need to tell the program the extraction job number with  correct settings, and the program will collect all the commands of its parents and assemble them into a ready-to-go bash script.  
+If you had setup a relion project, fine tuned some parameters based on the early data, and wanna continue processing the upcoming data, you need the "collect" mode. To use the collect mode, you need to tell the program the extraction job number with  correct settings, and the program will collect all the commands of its parents and assemble them into a ready-to-go bash script.  
 In this mode, the --new_sample --do_motioncorrection parameters won't work at all.  
   
 `python 12345.py collect`   
