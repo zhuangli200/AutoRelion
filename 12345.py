@@ -152,7 +152,7 @@ if __name__ == "__main__":
         from Template30 import *
 
     if args.mode == "auto":
-        create_relion_project(version)
+        create_relion_project(version, gui = relion_gui_parameters["manpick"])
         params = update_parameters(args)
         print_info("Will schedule RELION JOBS, and generate ready-to-use bash file")
         if args.do_motion_correction:

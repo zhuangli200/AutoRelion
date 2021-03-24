@@ -59,7 +59,7 @@ def get_image_dimensions(image, dimension = "y"):
 
 #Functions for AutoRelion Programs
 
-def create_relion_project(version, with_manpick_gui = True):
+def create_relion_project(version, gui, with_manpick_gui = True):
     if is_relion_folder():
         print_error("Cannot create projects on an existing one.")
     with open("default_pipeline.star",'w') as fp:
@@ -69,11 +69,11 @@ def create_relion_project(version, with_manpick_gui = True):
     if with_manpick_gui:
         if version == "3.0":
             with open(".gui_manualpickrun.job", "w") as fp:
-                fp.write(relion_gui_parameters["manpick"])
+                fp.write(gui)
             print_info("Added .gui_manualpick.job file to current RELION 3.0 folder")
         elif version == "3.1":
             with open(".gui_manualpickjob.star", "w") as fp:
-                fp.write(relion_gui_parameters["manpick"])
+                fp.write(gui)
             print_info("Added .gui_manualpickjob.star file to current RELION 3.1 folder")
         else:
             print_error("Unknown relion version")
