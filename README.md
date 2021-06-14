@@ -17,21 +17,20 @@ Since the program is designed based on the setting of Purdue cryo-EM facility, a
 The program is designed in the two different modes which are `auto` and `collect` mode.  
   
 In auto mode, the program will initiate a relion project and schedule a series of relion jobs, and generate a bash script for you to run in the terminal. While the scirpt is running in terminal, you can inspect the newest result such as accuracy of CTF estimation and particle picking in relion GUI. The auto mode works in the following scenarios:
-- If you don't have a template for particle picking, and import movies to relion folder.
+- If you don't have a template for particle picking, and import movies to relion folder.                
     `python 12345.py auto --new_sample --do_motioncorrection`
-- If you don't have a template for particle picking, and import motion-corrected images to relion folder.
+- If you don't have a template for particle picking, and import motion-corrected images to relion folder.              
     `python 12345.py auto --new_sample`
-- If you had a proper template for particle picking, and import movies to relion folder.
+- If you had a proper template for particle picking, and import movies to relion folder.               
     `python 12345.py auto --do_motioncorrection`
-- If you had a proper template for particle picking, and import motion-corrected images to relion folder.
+- If you had a proper template for particle picking, and import motion-corrected images to relion folder.           
     `python 12345.py auto`
 
 - Optionally, you can ask the program to run 2d classification for you.  
     `python 12345.py auto --new_sample --do_motioncorrection --run2d`  
 
 
-If you created a relion project, tuned some parameters with the early data, and would like to continue processing the upcoming data, you need the `collect` mode. The program will ask you the extraction job number with correct settings, so it can collect the commands of its parent jobs and assemble them into a ready-to-go bash script.  
-In this mode, the `--new_sample` and `--do_motioncorrection` parameters are ignored, so you don't have to specify it.
+If you created a relion project, tuned some parameters with the early data, and would like to continue processing the upcoming data, you need the `collect` mode. The program will ask you the extraction job number with correct settings, so it can collect the commands of its parent jobs and assemble them into a ready-to-go bash script. In this mode, the `--new_sample` and `--do_motioncorrection` parameters are ignored, so you don't have to specify it.
 
 Example commands:  
 `python 12345.py collect`   
