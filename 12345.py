@@ -9,29 +9,37 @@ from Site import site
 
 
 def check_user_input(k,v):
+    if k in ["voltage","eps","frames","camera_mode", "boxsize","ref_apix","mind","maxd"]:
+        try:
+            int(v)
+        except ValueError:
+            print_warning("You should input an integer")
+            return
+    if k in ["cs","exp_time", "apix","ref_apix"]:
+        try:
+            float(v)
+        except ValueError:
+            print_warning("What you provided is wrong")
+
     if k in ["gain", "ref"]:
         if not glob.glob(v):
-            print_warning("{} files are not found".format(k))
+            print_warning("{} file are not found".format(k))
             return
-        #print_warning("Make sure they will be linked to current folder later")
-        #if k == "gain":
-        #    if not check_mc_command(movies, gain):
-        #        return
     if k in ["motioncorr2", "gctf"]:
         if glob.glob(v):
             if subprocess.getstatusoutput(v)[0]:
                 print_warning("The {} program is not executable".format(k))
-                return True
+                return 
         else:
             print_warning("{} file is not Found".format(k))
-            return
-    if k == "eps":
-        if v < 10 or v > 40:
-            print_warning("Not a good choice, something wrong?")
             return
     if k == "boxsize":
         if int(v) % 2 :
             print_warning("You should provide an even number for the boxsize")
+            return
+    if k == "camera_mode":
+        if v not in "12":
+            print_warning("You should specifiy the mode 1 or mode 2")
             return
     if k == "session":
         if not re.match(r"\d{2}[a-z]{3}\d{2}[a-z]", v):
@@ -46,8 +54,8 @@ def update_global_parameters(args):
         comm["session"] = "XXX"
     if args.run2d:
         comm["auto2d"] = ""
-        print_info("To make full use of the computation resouce,")
-        print_info("run bash script on aries/taurus, and submit 2D job on gemini/spindle/orion")
+        print_info("To avoid conflict between this script and submitted 2D classification:")
+        print_info("run bash script as an interactive job and submit 2D job to the queue")
     else:
         comm["auto2d"] = "#"
 
@@ -56,34 +64,44 @@ def update_global_parameters(args):
     else:
         comm["skip_link"] = ""
     comm["current_time"] = date.today().strftime("%b-%d-%Y")
+    comm["time"] = site["defaultSleepTime"]
+    comm["mpi"] = site["defaultMpiNr"]
     return comm
 
 def update_parameters(args):
     preference = {
-        "voltage":["Voltage of microscope in kv", "300"],
-        "cs":["spheric abeeration in mm", 2.7],
-        "eps": ["Eletron per second (from Digital Micrograph)", 20],
-        "exp_time": ["Exposure time in seconds", 3.12],
-        "movies": ["Filepath of movies","rawdata/*.tif"],
-        "frames": ["Movie frames", 40 ],
-        "gain": ["Filepath of gain reference", "rawdata/references/21jan14b_xxx_norm_0.mrc"],
-        "motioncorr2":["Filepath of the motioncorr2 executable",site["motioncorr2_exe"]],
-        "micrographs":["Filepath of the dose-weighted images","DW/*.mrc"],
-        "gctf": ["Filepath of the gctf executable", site["gctf_exe"]],
-        "apix":["Physical Pixel size in angstrom", 1.05],
-        "boxsize":["Very Important one, estimated Box size for particle extraction:", 128],
-        "mpi":["mpi number for parallization", 1],
+        "voltage":["Voltage of microscope (kV)", site["defaultVoltage"]],
+        "cs":["Spheric abeeration (mm)", site["defaultCs"]],
+        "eps": ["Eletron per second (from Digital Micrograph)", site["defaultEPS"]],
+        "exp_time": ["Exposure time (in seconds)", site["defaultExpTime"]],
+        "movies": ["Filepath of movies",site["defaultMoviePath"]],
+        "frames": ["Number of movie frames", site["defaultFrameNr"]],
+        "gain": ["Filepath of gain reference", site["defaultGain"]],
+        "motioncorr2":["Filepath of the motioncorr2 program",site["motioncorr2_exe"]],
+        "camera_mode":["Data collection mode\n(1): Super-resolution mode\n(2): Counting mode",site["defaultMode"]],
+        "micrographs":["Filepath of the dose-weighted images",site["defaultMicsPath"]],
+        "gctf": ["Filepath of the gctf program", site["gctf_exe"]],
+        "apix":["Physical Pixel size (angstrom)", site["defaultApix"]],
+        "boxsize":["==Very Important==\nEstimated box size for particle extraction (pixel)", site["defaultBoxSize"]],
         "ref":["2D stacks for particle picking", "ref.mrcs"],
         "ref_apix":["Pixel size of picking template", 2.1],
-        "mind":["Minimum diameter of particles in anstrom", 80],
-        "maxd":["Maximum diameter of particles in anstrom", 120],
-        "time":["Sleeping time during jobs", 5],
+        "mind":["Minimum diameter of particles (angstrom)", 80],
+        "maxd":["Maximum diameter of particles (angstrom)", 120],
         "session":["Session Name:", ""]}
+
+    params = {}
+
+    if not subprocess.getstatusoutput(site["gctf_exe"])[0]:
+        preference.pop["gctf"]
+        params["gctf"] = site["gctf_exe"]
 
     if args.do_motion_correction:
         preference.pop("micrographs")
+        if not subprocess.getstatusoutput(site["motioncorr2_exe"])[0]:
+            preference.pop["motioncorr2"]
+            params["motioncorr2"] = site["motioncorr2_exe"]
     else:
-        for k in ["eps", "exp_time", "movies", "frames", "gain", "motioncorr2"]:
+        for k in ["eps", "exp_time", "movies", "frames", "gain", "motioncorr2","camera_mode"]:
             preference.pop(k)
 
     if args.new_sample:
@@ -96,11 +114,10 @@ def update_parameters(args):
     if args.skip_link:
         preference.pop("session")
 
-    params = {}
 
     for ele in preference.keys():
         while True:
-            info = "{:<50}\033[31m{:>60}\033[0m\nOr:    ".\
+            info = "{:<40}:\033[31m{:>60}\033[0m\nOr:    ".\
                 format(preference[ele][0], str(preference[ele][1]))
             user_input = tabComplete(info)
             if user_input:
@@ -114,14 +131,18 @@ def update_parameters(args):
     if args.do_motion_correction:
         params["dose"] = round(params["eps"] * params["exp_time"] \
             / params["apix"] / params["apix"] / params["frames"], 2)
-        params["half_apix"] = float(float(params["apix"]) / 2)
+        #nee to double check the following codes
+        if params["camera_mode"] == 1:
+            params["half_apix"] = params["apix"] / 2
+        else:
+            params["half_apix"] = params["apix"]
         params["extract_job"] = "job005"
     else:
         params["extract_job"] = "job004"
     
-    params["half_boxsize"] = int(int(params["boxsize"]) / 2)
-    params["bg_radius"] = int(int(params["boxsize"]) / 4 * 0.75)
-    params["mask_diameter"] = int(int(params["boxsize"]) * float(params["apix"]) * 0.9 // 2 * 2)
+    params["half_boxsize"] = int(params["boxsize"] / 2)
+    params["bg_radius"] = int(params["boxsize"] / 4 * 0.75)
+    params["mask_diameter"] = int(params["boxsize"] * params["apix"] * 0.9 // 2 * 2)
     print_dict(params)
     return params
 
