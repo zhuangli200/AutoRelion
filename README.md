@@ -16,15 +16,16 @@ Since the program is designed based on the setting of Purdue cryo-EM facility, a
 **Usage:**  
 The program is designed in the two different modes which are `auto` and `collect` mode.  
   
-In auto mode, the program will initiate a relion project and schedule a series of relion jobs, and generate a bash script for you to run in the terminal. While the scirpt is running in terminal, you can inspect the newest result such as accuracy of CTF estimation and particle picking in relion GUI.
-By default, the program assume you link new data, import motion-corrected image, and have a template for particle picking, and don't ask the program to 2d classification. In this case, you can start the program by:  `python 12345.py auto`.
-- If you don't have a template for particle picking
+In auto mode, the program will initiate a relion project and schedule a series of relion jobs, and generate a bash script for you to run in the terminal. While the scirpt is running in terminal, you can inspect the newest result such as accuracy of CTF estimation and particle picking in relion GUI. The default scenario is that the program links new data, imports motion-corrected image, pick particles with template, and skip 2D classification.
+- If you use the default settings,      
+    `python 12345.py auto`.
+- If you don't have a template for particle picking,     
     `python 12345.py auto --new_sample`
-- If import movies to relion folder.               
+- If import movies to relion folder,               
     `python 12345.py auto --do_motioncorrection`
-- If you want to import data outside this script:       
+- If you want to import data outside this script,              
     `python 12345.py --skip_link`
-- If you ask the program to run 2d classification for you.  
+- If you ask the program to run 2d classification for you.      
     `python 12345.py auto --run2d` 
 
 If you created a relion project, tuned some parameters with the early data, and would like to continue processing the upcoming data, you need the `collect` mode. The program will ask you the extraction job number with correct settings, so it can collect the commands of its parent jobs and assemble them into a ready-to-go bash script. In this mode, the `--skip_link`, `--new_sample` and `--do_motioncorrection` parameters are ignored, so you don't have to specify it.
