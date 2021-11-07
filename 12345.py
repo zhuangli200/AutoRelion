@@ -136,20 +136,20 @@ def update_parameters(args):
                 break
     
     if args.do_motion_correction:
-        params["dose"] = round(params["eps"] * params["exp_time"] \
-            / params["apix"] / params["apix"] / params["frames"], 2)
+        params["dose"] = round(int(params["eps"]) * float(params["exp_time"]) \
+            / float(params["apix"]) / float(params["apix"]) / int(params["frames"]), 2)
         #nee to double check the following codes
         if params["camera_mode"] == 2:
-            params["half_apix"] = params["apix"] / 2
+            params["half_apix"] = float(params["apix"]) / 2
         else:
             params["half_apix"] = params["apix"]
         params["extract_job"] = "job005"
     else:
         params["extract_job"] = "job004"
     
-    params["half_boxsize"] = int(params["boxsize"] / 2)
-    params["bg_radius"] = int(params["boxsize"] / 4 * 0.75)
-    params["mask_diameter"] = int(params["boxsize"] * params["apix"] * 0.9 // 2 * 2)
+    params["half_boxsize"] = int(int(params["boxsize"]) / 2)
+    params["bg_radius"] = int(int(params["boxsize"]) / 4 * 0.75)
+    params["mask_diameter"] = int(int(params["boxsize"]) * float(params["apix"]) * 0.9 // 2 * 2)
     print_dict(params)
     return params
 
