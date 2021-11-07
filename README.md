@@ -22,13 +22,13 @@ In auto mode, the program will initiate a relion project and schedule a series o
 - If you don't have a template for particle picking,     
     `python 12345.py auto --new_sample`
 - If import movies to relion folder,               
-    `python 12345.py auto --do_motioncorrection`
+    `python 12345.py auto --do_motion_correction`
 - If you want to import data outside this script,              
     `python 12345.py --skip_link`
 - If you ask the program to run 2d classification for you.      
     `python 12345.py auto --run2d` 
 
-If you created a relion project, tuned some parameters with the early data, and would like to continue processing the upcoming data, you need the `collect` mode. The program will ask you the extraction job number with correct settings, so it can collect the commands of its parent jobs and assemble them into a ready-to-go bash script. In this mode, the `--skip_link`, `--new_sample` and `--do_motioncorrection` parameters are ignored, so you don't have to specify it.
+If you created a relion project, tuned some parameters with the early data, and would like to continue processing the upcoming data, you need the `collect` mode. The program will ask you the extraction job number with correct settings, so it can collect the commands of its parent jobs and assemble them into a ready-to-go bash script. In this mode, the `--skip_link`, `--new_sample` and `--do_motion_correction` parameters are ignored, so you don't have to specify it.
 
 Example commands:  
 `python 12345.py collect`   
