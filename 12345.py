@@ -96,13 +96,13 @@ def update_parameters(args):
 
     params = {}
 
-    if not subprocess.getstatusoutput(site["gctf_exe"])[0]:
+    if not subprocess.getstatusoutput("ldd" + site["gctf_exe"])[0]:
         preference.pop("gctf")
         params["gctf"] = site["gctf_exe"]
 
     if args.do_motion_correction:
         preference.pop("micrographs")
-        if not subprocess.getstatusoutput(site["motioncorr2_exe"])[0]:
+        if not subprocess.getstatusoutput("ldd " + site["motioncorr2_exe"])[0]:
             preference.pop["motioncorr2"]
             params["motioncorr2"] = site["motioncorr2_exe"]
     else:
