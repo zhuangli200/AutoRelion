@@ -83,7 +83,7 @@ def update_parameters(args):
         "frames": ["Number of movie frames", site["defaultFrameNr"]],
         #"gain": ["Filepath of gain reference", site["defaultGain"]],
         "motioncorr2":["Filepath of the motioncorr2 program",site["motioncorr2_exe"]],
-        "camera_mode":["Data collection mode\n(1): Super-resolution mode\n(2): Counting mode",site["defaultMode"]],
+        "camera_mode":["Data collection mode\n(1): Counting mode\n(2): Super-resolution mode",site["defaultMode"]],
         "micrographs":["Filepath of the dose-weighted images",site["defaultMicsPath"]],
         "gctf": ["Filepath of the gctf program", site["gctf_exe"]],
         "apix":["Physical Pixel size (angstrom)", site["defaultApix"]],
@@ -103,7 +103,7 @@ def update_parameters(args):
     if args.do_motion_correction:
         preference.pop("micrographs")
         if not subprocess.getstatusoutput("ldd " + site["motioncorr2_exe"])[0]:
-            preference.pop["motioncorr2"]
+            preference.pop("motioncorr2")
             params["motioncorr2"] = site["motioncorr2_exe"]
     else:
         for k in ["eps", "exp_time", "movies", "frames", "motioncorr2","camera_mode"]:
