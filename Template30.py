@@ -144,7 +144,7 @@ collect_template4 = HEADER + import_section + ctf_section + autopk_section + ext
 
 #bash template for auto mode with motion correction
 #x0 = "{link_cmd} {source_path}{session} {dest_path} 2>/dev/null"
-x0 = """ln -s /net/em/frames/{session}/rawdata movies 2>/dev/null"""
+x0 = """ln -s {movie_root_folder}{session} movies 2>/dev/null"""
 x1 = """relion_star_loopheader rlnMicrographMovieName > Import/job001/movies.star"""
 x2 = """ls -rt {movies} >> Import/job001/movies.star"""
 x3 = """mpirun -np {mpi} `which relion_run_motioncorr_mpi` --i Import/job001/movies.star --o MotionCorr/job002/ --first_frame_sum 1 --last_frame_sum -1 --use_motioncor2  --motioncor2_exe {motioncorr2} --other_motioncor2_args " -Tor 0.5 -Iter 7 " --bin_factor {camera_mode} --bfactor 250 --angpix {half_apix} --voltage {voltage} --dose_per_frame {dose} --preexposure 0 --patch_x 7 --patch_y 5 --dose_weighting  --only_do_unfinished"""
@@ -163,7 +163,7 @@ auto_template5 = HEADER + import_section + mc_section + ctf_section + autopk_sec
 auto_template5_blob = HEADER + import_section + mc_section + ctf_section + autopk_section_b + extract_section + TAIL
 
 #bash template for auto mode without motion correction
-y0 = """mkdir -p DW && ln -s /net/em/leginon/{session}/rawdata/*DW.mrc DW/ 2>/dev/null"""
+y0 = """mkdir -p DW && ln -s {micrographs_root_folder}{session}/*DW.mrc DW/ 2>/dev/null"""
 y1 = """relion_star_loopheader rlnMicrographName > Import/job001/micrographs.star"""
 y2 = """ls -rt {micrographs} >> Import/job001/micrographs.star"""
 y3 = """mpirun -np {mpi} `which relion_run_ctffind_mpi` --i Import/job001/micrographs.star --o CtfFind/job002/ --CS {cs} --HT {voltage} --AmpCnst 0.1 --XMAG 10000 --DStep {apix} --Box 512 --ResMin 30 --ResMax 5 --dFMin 5000 --dFMax 50000 --FStep 500 --dAst 100 --use_gctf --gctf_exe {gctf} --angpix {apix} --EPA --gpu "" --only_do_unfinished"""

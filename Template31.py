@@ -143,9 +143,9 @@ collect_template4 = HEADER + import_section + ctf_section + autopk_section + ext
 
 
 #bash template for auto mode with motion correction
-x0 = """ln -s /net/em/frames/{session}/rawdata movies 2>/dev/null"""
+x0 = """ln -s {movie_root_folder}{session} movies 2>/dev/null"""
 x1 = """ relion_import  --do_movies  --optics_group_name "opticsGroup1" --angpix {half_apix} --kV {voltage} --Cs {cs} --Q0 0.1 --beamtilt_x 0 --beamtilt_y 0 --i "{movies}" --odir Import/job001/ --ofile movies.star --pipeline_control Import/job001/"""
-x3 = """ mpirun -np {mpi} `which relion_run_motioncorr_mpi` --i Import/job001/movies.star --o MotionCorr/job002/ --first_frame_sum 1 --last_frame_sum -1 --use_motioncor2  --motioncor2_exe {motioncorr2} --other_motioncor2_args " -Tor 0.5 -Iter 7 " --gpu "" --bin_factor {camera_mode}2 --bfactor 250 --dose_per_frame {dose} --preexposure 0 --patch_x 7 --patch_y 5 --dose_weighting  --only_do_unfinished --pipeline_control MotionCorr/job002/"""
+x3 = """ mpirun -np {mpi} `which relion_run_motioncorr_mpi` --i Import/job001/movies.star --o MotionCorr/job002/ --first_frame_sum 1 --last_frame_sum -1 --use_motioncor2  --motioncor2_exe {motioncorr2} --other_motioncor2_args " -Tor 0.5 -Iter 7 " --gpu "" --bin_factor {camera_mode} --bfactor 250 --dose_per_frame {dose} --preexposure 0 --patch_x 7 --patch_y 5 --dose_weighting  --only_do_unfinished --pipeline_control MotionCorr/job002/"""
 x4 = """ mpirun -np {mpi} `which relion_run_ctffind_mpi` --i MotionCorr/job002/corrected_micrographs.star --o CtfFind/job003/ --Box 512 --ResMin 30 --ResMax 5 --dFMin 5000 --dFMax 50000 --FStep 500 --dAst 100 --use_gctf --gctf_exe {gctf} --EPA --gpu "" --only_do_unfinished   --pipeline_control CtfFind/job003/"""
 x5a = """mpirun -np {mpi} `which relion_autopick_mpi` --i CtfFind/job003/micrographs_ctf.star --odir AutoPick/job004/ --pickname autopick --ref {ref} --invert  --ctf  --ang 5 --shrink 0.5 --lowpass 20 --angpix {apix} --angpix_ref {ref_apix} --threshold 0.2 --min_distance 90 --max_stddev_noise 1.1 --gpu "" --only_do_unfinished   --pipeline_control AutoPick/job004/"""
 x5b = """mpirun -np 8 `which relion_autopick_mpi` --i CtfFind/job003/micrographs_ctf.star --odir AutoPick/job004/ --pickname autopick --LoG  --LoG_diam_min {mind} --LoG_diam_max {maxd} --shrink 0 --lowpass 20 --LoG_adjust_threshold 1 --only_do_unfinished --pipeline_control AutoPick/job004/ """
@@ -163,7 +163,7 @@ auto_template5_blob = HEADER + import_section + mc_section + ctf_section + autop
 
 #bash template for auto mode without motion correction
 #This "DW" folder needs cannot be fixed
-y0 = """mkdir -p DW && ln -s /net/em/leginon/{session}/rawdata/*DW.mrc DW/ 2>/dev/null"""
+y0 = """mkdir -p DW && ln -s {micrograph_root_folder}{session}/*DW.mrc DW/ 2>/dev/null"""
 y1 = """relion_import  --do_micrographs  --optics_group_name "opticsGroup1" --angpix {apix} --kV {voltage} --Cs {cs} --Q0 0.1 --beamtilt_x 0 --beamtilt_y 0 --i "{micrographs}" --odir Import/job001/ --ofile micrographs.star --pipeline_control Import/job001/ """
 y3 = """mpirun -np {mpi} `which relion_run_ctffind_mpi` --i Import/job001/micrographs.star --o CtfFind/job002/ --Box 512 --ResMin 30 --ResMax 5 --dFMin 5000 --dFMax 50000 --FStep 500 --dAst 100 --use_gctf --gctf_exe {gctf} --EPA --gpu "" --only_do_unfinished --pipeline_control CtfFind/job002/ """
 y4a = """mpirun -np {mpi} `which relion_autopick_mpi` --i CtfFind/job002/micrographs_ctf.star --odir AutoPick/job003/ --pickname autopick --ref {ref} --invert  --ctf  --ang 5 --shrink 0.5 --lowpass 20 --angpix {apix} --angpix_ref {ref_apix} --threshold 0.2 --min_distance 90 --max_stddev_noise 1.1 --gpu "" --only_do_unfinished --pipeline_control AutoPick/job003/"""
