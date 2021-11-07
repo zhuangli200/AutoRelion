@@ -139,10 +139,7 @@ def update_parameters(args):
         params["dose"] = round(int(params["eps"]) * float(params["exp_time"]) \
             / float(params["apix"]) / float(params["apix"]) / int(params["frames"]), 2)
         #nee to double check the following codes
-        if params["camera_mode"] == 2:
-            params["half_apix"] = float(params["apix"]) / 2
-        else:
-            params["half_apix"] = params["apix"]
+        params["half_apix"] = float(params["apix"]) / int(params["camera_mode"])
         params["extract_job"] = "job005"
     else:
         params["extract_job"] = "job004"
