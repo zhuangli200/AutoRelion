@@ -166,7 +166,7 @@ def ArgumentParse():
     parser.add_argument("--skip_link", action = 'store_true', \
         help = "Optional: If specified, will skip linking files from EM-server")
     parser.add_argument("--run2d", action = 'store_true', \
-        help = "Optional: If specified, will try to submit 2d classification to local slurm queue")
+        help = "Optional: If specified, will submit 2d classification to slurm queue")
     args = parser.parse_args()
     return args
 
