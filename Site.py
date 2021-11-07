@@ -1,6 +1,29 @@
 ############################################################################
 #   Written by Zhuang Li, Purdue University. Last modified at 2021-03-01   #
 ############################################################################
+hubu = {}
+hubu["domain_name"] = "hubu.edu.cn"
+hubu["mail_client"] = "mail"
+hubu["cluster"] = "202.114.156.70"
+hubu["em_server"] = "/data/movies/kriosG3/session/"
+hubu["gctf_exe"] = "/home/t20210106/.local/apps/external/GCTF_v1.18_sm30-75_cu10.1"
+hubu["e2proc2d_exe"] = "/apps/eman2/EMAN2_2.22/bin/e2proc2d.py"
+hubu["motioncorr2_exe"] = "/home/t20210106/.local/apps/external/MotionCor2_1.4.5_Cuda101-10-22-2021"
+#Microscope Information
+hubu["defaultVoltage"] = 300
+hubu["defaultCs"] = 2.7
+hubu["defaultEPS"] = 20
+hubu["defaultExpTime"] = 3.12
+hubu["defaultMoviePath"] = "movies/*.tif"
+hubu["defaultMode"] = 2 # 2 for super-resolution mode, and 1 for counting mode
+hubu["defaultFrameNr"] = 40
+hubu["defaultMicsPath"] = "DW/*.mrc"
+hubu["defaultApix"] = 0.85
+hubu["defaultBoxSize"] = 128
+#Computation Information
+hubu["defaultSleepTime"] = "5"
+hubu["defaultMpiNr"] = "1"
+
 #Purdue Specific parameters
 purdue ={}
 purdue["domain_name"] = "purdue.edu"
@@ -25,10 +48,28 @@ purdue["defaultMicsPath"] = "DW/*.mrc"
 purdue["defaultApix"] = 1.05
 purdue["defaultBoxSize"] = 128
 purdue["gain-movie-operation"] = "asis" #flip rotate
+#Computation Information
 purdue["defaultSleepTime"] = "5"
 purdue["defaultMpiNr"] = "1"
-purdue["cmd"] = {}
-purdue["queue"] = "sbatch"
-purdue["queue_partition"] = "chang-gpu"
+purdue["sync"] = "globus"
+# The following $prefix cannot be changed
+purdue["queue_cmd"] = "sbatch" #  or PBS
+purdue["queue_template"]= """<<EOF
+#! /bin/bash
+#SBATCH --job-name=$prefix
+#SBATCH --ntasks=3
+#SBATCH --partition=chang-gpu
+#SBATCH --cpus-per-task=2
+#SBATCH --time=0
+#SBATCH --mem=30G
+#SBATCH --gres=gpu:2
+export CUDA_DEVICE_ORDER=PCI_BUS_ID"""
+#purdue["link_cmd"] = "ln -s"
+#purdue["data_prefix"] = ""
+#purdue["link_dw_template"] = "rsync -azvr user@192.168.1.1:/net/em/leginon/{session}/rawdata/*-DW.mrc {mics_path}"
+#purdue["link_dw_template"] = "rsync -azvr user@192.168.1.1:/net/em/leginon/{session}/rawdata/*-DW.mrc {mics_path}"
+#purdue["link_movie_template"] = "rsync -azvr user@192.168.1.1:/net/em/frames/{session}/rawdata/*.tif {movie_path}"
+#purdue["link_movie_template"] = "rsync -azvr user@192.168.1.1:/net/em/frames/{session}/rawdata/*.tif {movie_path}"
+#purdue["link_dw_template"] = "globus transfer $NYSBC_GLOBUS_ID:/gpfs/leginon/$NYSBC_USERNAME/$1/rawdata/*DW.mrc $LOCAL_GLOBUS_ID:$LOCAL_FOLDER/$1/DW/ --recursive --label $1$2"
 
-site = purdue
+site = hubu

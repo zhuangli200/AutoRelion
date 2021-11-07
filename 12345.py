@@ -9,7 +9,7 @@ from Site import site
 
 
 def check_user_input(k,v):
-    if k in ["voltage","eps","frames","camera_mode", "boxsize","ref_apix","mind","maxd"]:
+    if k in ["voltage","eps","frames","camera_mode", "boxsize","mind","maxd"]:
         try:
             int(v)
         except ValueError:
@@ -21,7 +21,7 @@ def check_user_input(k,v):
         except ValueError:
             print_warning("What you provided is wrong")
 
-    if k in ["gain", "ref"]:
+    if k == "ref":
         if not glob.glob(v):
             print_warning("{} file are not found".format(k))
             return
@@ -35,7 +35,7 @@ def check_user_input(k,v):
             return
     if k == "boxsize":
         if int(v) % 2 :
-            print_warning("You should provide an even number for the boxsize")
+            print_warning("You should provide an even number for the boxsize. Preferred box sizes include 128, 160, 192, 256")
             return
     if k == "camera_mode":
         if v not in "12":
@@ -43,7 +43,7 @@ def check_user_input(k,v):
             return
     if k == "session":
         if not re.match(r"\d{2}[a-z]{3}\d{2}[a-z]", v):
-            print_warning("Invalid session name was provided")
+            print_warning("Invalid session name was provided ")
             return
     return True
 
@@ -53,16 +53,21 @@ def update_global_parameters(args):
         comm["mask_diameter"] = "-1"
         comm["session"] = "XXX"
     if args.run2d:
+        # check if queue command is available
+        comm["queue_template"] = site["queue_template"]
         comm["auto2d"] = ""
         print_info("To avoid conflict between this script and submitted 2D classification:")
         print_info("run bash script as an interactive job and submit 2D job to the queue")
     else:
         comm["auto2d"] = "#"
+        comm["queue_template"] = "xxxx"
 
     if args.skip_link:
         comm["skip_link"] = "#"
     else:
         comm["skip_link"] = ""
+        #comm["link_cmd"] = ""
+        #comm["source_path"] = ""
     comm["current_time"] = date.today().strftime("%b-%d-%Y")
     comm["time"] = site["defaultSleepTime"]
     comm["mpi"] = site["defaultMpiNr"]
@@ -76,7 +81,7 @@ def update_parameters(args):
         "exp_time": ["Exposure time (in seconds)", site["defaultExpTime"]],
         "movies": ["Filepath of movies",site["defaultMoviePath"]],
         "frames": ["Number of movie frames", site["defaultFrameNr"]],
-        "gain": ["Filepath of gain reference", site["defaultGain"]],
+        #"gain": ["Filepath of gain reference", site["defaultGain"]],
         "motioncorr2":["Filepath of the motioncorr2 program",site["motioncorr2_exe"]],
         "camera_mode":["Data collection mode\n(1): Super-resolution mode\n(2): Counting mode",site["defaultMode"]],
         "micrographs":["Filepath of the dose-weighted images",site["defaultMicsPath"]],
@@ -92,7 +97,7 @@ def update_parameters(args):
     params = {}
 
     if not subprocess.getstatusoutput(site["gctf_exe"])[0]:
-        preference.pop["gctf"]
+        preference.pop("gctf")
         params["gctf"] = site["gctf_exe"]
 
     if args.do_motion_correction:
@@ -101,7 +106,7 @@ def update_parameters(args):
             preference.pop["motioncorr2"]
             params["motioncorr2"] = site["motioncorr2_exe"]
     else:
-        for k in ["eps", "exp_time", "movies", "frames", "gain", "motioncorr2","camera_mode"]:
+        for k in ["eps", "exp_time", "movies", "frames", "motioncorr2","camera_mode"]:
             preference.pop(k)
 
     if args.new_sample:
@@ -132,7 +137,7 @@ def update_parameters(args):
         params["dose"] = round(params["eps"] * params["exp_time"] \
             / params["apix"] / params["apix"] / params["frames"], 2)
         #nee to double check the following codes
-        if params["camera_mode"] == 1:
+        if params["camera_mode"] == 2:
             params["half_apix"] = params["apix"] / 2
         else:
             params["half_apix"] = params["apix"]
@@ -167,10 +172,14 @@ if __name__ == "__main__":
     args = ArgumentParse()
     comm = update_global_parameters(args)
     version = get_relion_version()
-    if version == "3.1":
-        from Template31 import *
-    else:
+    if version == "3.0":
         from Template30 import *
+    elif version == "3.1":
+        from Template31 import *
+    elif version == "4.0":
+        from Template40 import *
+    else:
+        print_error("Unsupported relion version")
 
     if args.mode == "auto":
         create_relion_project(version, gui = relion_gui_parameters["manpick"])

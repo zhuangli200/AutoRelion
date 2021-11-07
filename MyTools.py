@@ -10,7 +10,7 @@ def print_info (s, verbose = True):
 
 def print_dict(d):
     for k, v in d.items(): 
-        print ("\033[1m\033[34mKey:{:>35},   Value: {:>25},  Type:{:>25}\033[0m".format(k, str(v), str(type(v))))
+        print ("\033[1m\033[34mKey:{:>15},   Value: {:>45},  Type:{:>25}\033[0m".format(k, str(v), str(type(v))))
 
 def print_error (s, verbose= True, do_exit = "True"):
     if verbose:
