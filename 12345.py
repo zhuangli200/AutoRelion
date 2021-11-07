@@ -71,6 +71,8 @@ def update_global_parameters(args):
     comm["current_time"] = date.today().strftime("%b-%d-%Y")
     comm["time"] = site["defaultSleepTime"]
     comm["mpi"] = site["defaultMpiNr"]
+    comm["movie_root_folder"] = site["movie_root_folder"]
+    comm["micrograph_root_folder"] = site["micrograph_root_folder"]
     return comm
 
 def update_parameters(args):
