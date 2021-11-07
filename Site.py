@@ -15,7 +15,7 @@ hubu["defaultVoltage"] = 300
 hubu["defaultCs"] = 2.7
 hubu["defaultEPS"] = 20
 hubu["defaultExpTime"] = 3.12
-hubu["defaultMoviePath"] = "movies/*.tif"
+hubu["defaultMoviePath"] = "movies/*.tiff"
 hubu["defaultMode"] = "2" # 2 for super-resolution mode, and 1 for counting mode
 hubu["defaultFrameNr"] = 40
 hubu["defaultMicsPath"] = "DW/*.mrc"
@@ -23,7 +23,7 @@ hubu["defaultApix"] = 0.85
 hubu["defaultBoxSize"] = 128
 #Computation Information
 hubu["defaultSleepTime"] = "5"
-hubu["defaultMpiNr"] = "1"
+hubu["defaultMpiNr"] = "2"
 
 #Purdue Specific parameters
 purdue ={}
