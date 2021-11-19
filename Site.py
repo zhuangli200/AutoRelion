@@ -5,16 +5,13 @@ hubu = {}
 hubu["domain_name"] = "hubu.edu.cn"
 hubu["mail_client"] = "mail"
 hubu["cluster"] = "202.114.156.70"
-hubu["movie_root_folder"] = "/data/movies/session/"
-hubu["micrograph_root_folder"] = "/data/micrographs/session/"
 hubu["gctf_exe"] = "/home/t20210106/.local/apps/external/GCTF_v1.18_sm30-75_cu10.1"
-hubu["e2proc2d_exe"] = "/apps/eman2/EMAN2_2.22/bin/e2proc2d.py"
 hubu["motioncorr2_exe"] = "/home/t20210106/.local/apps/external/MotionCor2_1.4.5_Cuda101-10-22-2021"
 #Microscope Information
 hubu["defaultVoltage"] = 300
 hubu["defaultCs"] = 2.7
-hubu["defaultEPS"] = 20
-hubu["defaultExpTime"] = 3.12
+hubu["defaultEPS"] = 15
+hubu["defaultExpTime"] = 2.5
 hubu["defaultMoviePath"] = "movies/*.tiff"
 hubu["defaultMode"] = "2" # 2 for super-resolution mode, and 1 for counting mode
 hubu["defaultFrameNr"] = 40
@@ -23,7 +20,7 @@ hubu["defaultApix"] = 0.85
 hubu["defaultBoxSize"] = 128
 #Computation Information
 hubu["defaultSleepTime"] = "5"
-hubu["defaultMpiNr"] = "2"
+hubu["defaultMpiNr"] = "1"
 
 #Purdue Specific parameters
 purdue ={}

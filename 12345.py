@@ -41,17 +41,12 @@ def check_user_input(k,v):
         if v not in "12":
             print_warning("You should specifiy the mode 1 or mode 2")
             return
-    if k == "session":
-        if not re.match(r"\d{2}[a-z]{3}\d{2}[a-z]", v):
-            print_warning("Invalid session name was provided ")
-            return
     return True
 
 def update_global_parameters(args):
     comm = {}
     if args.mode == "collect":
         comm["mask_diameter"] = "-1"
-        comm["session"] = "XXX"
     if args.run2d:
         # check if queue command is available
         comm["queue_template"] = site["queue_template"]
@@ -62,17 +57,9 @@ def update_global_parameters(args):
         comm["auto2d"] = "#"
         comm["queue_template"] = "xxxx"
 
-    if args.skip_link:
-        comm["skip_link"] = "#"
-    else:
-        comm["skip_link"] = ""
-        #comm["link_cmd"] = ""
-        #comm["source_path"] = ""
     comm["current_time"] = date.today().strftime("%b-%d-%Y")
     comm["time"] = site["defaultSleepTime"]
     comm["mpi"] = site["defaultMpiNr"]
-    comm["movie_root_folder"] = site["movie_root_folder"]
-    comm["micrograph_root_folder"] = site["micrograph_root_folder"]
     return comm
 
 def update_parameters(args):
@@ -83,7 +70,6 @@ def update_parameters(args):
         "exp_time": ["Exposure time (in seconds)", site["defaultExpTime"]],
         "movies": ["Filepath of movies",site["defaultMoviePath"]],
         "frames": ["Number of movie frames", site["defaultFrameNr"]],
-        #"gain": ["Filepath of gain reference", site["defaultGain"]],
         "motioncorr2":["Filepath of the motioncorr2 program",site["motioncorr2_exe"]],
         "camera_mode":["Data collection mode\n(1): Counting mode\n(2): Super-resolution mode",site["defaultMode"]],
         "micrographs":["Filepath of the dose-weighted images",site["defaultMicsPath"]],
@@ -93,12 +79,11 @@ def update_parameters(args):
         "ref":["2D stacks for particle picking", "ref.mrcs"],
         "ref_apix":["Pixel size of picking template", 2.1],
         "mind":["Minimum diameter of particles (angstrom)", 80],
-        "maxd":["Maximum diameter of particles (angstrom)", 120],
-        "session":["Session Name:", ""]}
+        "maxd":["Maximum diameter of particles (angstrom)", 120]}
 
     params = {}
 
-    if not subprocess.getstatusoutput("ldd" + site["gctf_exe"])[0]:
+    if not subprocess.getstatusoutput(site["gctf_exe"])[0]:
         preference.pop("gctf")
         params["gctf"] = site["gctf_exe"]
 
@@ -118,10 +103,6 @@ def update_parameters(args):
         preference.pop("mind")
         preference.pop("maxd")
 
-    if args.skip_link:
-        preference.pop("session")
-
-
     for ele in preference.keys():
         while True:
             info = "{:<40}:\033[31m{:>60}\033[0m\nOr:    ".\
@@ -138,7 +119,7 @@ def update_parameters(args):
     if args.do_motion_correction:
         params["dose"] = round(int(params["eps"]) * float(params["exp_time"]) \
             / float(params["apix"]) / float(params["apix"]) / int(params["frames"]), 2)
-        #nee to double check the following codes
+        #need to double check the following codes
         params["half_apix"] = float(params["apix"]) / int(params["camera_mode"])
         params["extract_job"] = "job005"
     else:
@@ -160,8 +141,6 @@ def ArgumentParse():
         help = "Optional: If specified, will do motion correction, otherwise will be skipped")
     parser.add_argument("--new_sample", action='store_true', \
         help = "Optional: If specified, will pick particles without templates")
-    parser.add_argument("--skip_link", action = 'store_true', \
-        help = "Optional: If specified, will skip linking files from EM-server")
     parser.add_argument("--run2d", action = 'store_true', \
         help = "Optional: If specified, will submit 2d classification to slurm queue")
     args = parser.parse_args()
