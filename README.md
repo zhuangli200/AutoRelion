@@ -9,9 +9,8 @@ Python 3.7 or above. Some common modules, such as argparse and glob, are needed.
 The program is designed for on-the-fly data processing. Therefore, it is meaningless to use this program if the data collection is finished.  It is also meaningless if the newly collected data are not readily accessed. 
   
 For sake of ease of use, the program is designed in sacrifice of flexibility. For instance, user can only use motioncorr2 to do motion corrections, gctf to do ctf estimation, relion picking (with or without template) for particle picking. Also, most of not-so-important parameters are not adjustable.  
-  
-Since the program is designed based on the setting of Purdue cryo-EM facility, adjustment is needed to fit your local settings. A major difference among different institutions is how the movies or motion-corrected images are imported to your relion folder . For instance, our cryo-EM data can be locally accessed, so a `ln` is used to link new data to the relion project, while others may need  `rsync`, `globus`, or other syncing commnads to transfer the new data to local storage. In this case, the commands in `Site.py` files need to be modified. 2D classification job is submited to job queue via `slurm`, while others may use different slurm parameters or other job queueing system. 
-  
+
+To make the new data accessible, you have to link the movies folder being written to to local directory.
 
 **Usage:**  
 The program is designed in the two different modes which are `auto` and `collect` mode.  
