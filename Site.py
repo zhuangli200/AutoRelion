@@ -62,12 +62,5 @@ purdue["queue_template"]= """<<EOF
 #SBATCH --mem=30G
 #SBATCH --gres=gpu:2
 export CUDA_DEVICE_ORDER=PCI_BUS_ID"""
-#purdue["link_cmd"] = "ln -s"
-#purdue["data_prefix"] = ""
-#purdue["link_dw_template"] = "rsync -azvr user@192.168.1.1:/net/em/leginon/{session}/rawdata/*-DW.mrc {mics_path}"
-#purdue["link_dw_template"] = "rsync -azvr user@192.168.1.1:/net/em/leginon/{session}/rawdata/*-DW.mrc {mics_path}"
-#purdue["link_movie_template"] = "rsync -azvr user@192.168.1.1:/net/em/frames/{session}/rawdata/*.tif {movie_path}"
-#purdue["link_movie_template"] = "rsync -azvr user@192.168.1.1:/net/em/frames/{session}/rawdata/*.tif {movie_path}"
-#purdue["link_dw_template"] = "globus transfer $NYSBC_GLOBUS_ID:/gpfs/leginon/$NYSBC_USERNAME/$1/rawdata/*DW.mrc $LOCAL_GLOBUS_ID:$LOCAL_FOLDER/$1/DW/ --recursive --label $1$2"
 
 site = hubu
